@@ -84,6 +84,7 @@ class BaseModel(dict):
         record = self._get_record(table)
         self._set_attribute_values(record)
         self._update_related_object_ids(record)
+        return self
 
     def delete(self):
         """
@@ -96,6 +97,8 @@ class BaseModel(dict):
         if self.id not in table:
             raise InstanceDoesNotExist()
         del table[self.id]
+        self.id = None
+        return self
 
 
 class EmailAddress(BaseModel):
@@ -146,3 +149,8 @@ class Person(BaseModel):
         'phone_numbers': PhoneNumber,
         'groups': Group,
     }
+
+    def get_groups(self):
+        group_ids = [g.id for g in self['groups']]
+        group_results = self.book.groups.filter(id=group_ids)
+        return self.book.groups.convert_results(group_results)

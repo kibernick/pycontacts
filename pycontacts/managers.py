@@ -30,13 +30,27 @@ class BaseManager:
         if not table:
             table = self._get_table()
         results = {}
+
         for obj_id, obj_attrs in table.items():
             for attr, qry_val in kwargs.items():
+
+                # Special case if querying per 'id'
+                if attr == 'id':
+                    # If lookup per list of id's
+                    if isinstance(qry_val, list) and obj_id in qry_val:
+                            results[obj_id] = obj_attrs
+                    # Exact match needed otherwise.
+                    elif obj_id == qry_val:
+                        results[obj_id] = obj_attrs
+                    continue
+
                 obj_val = obj_attrs[attr]
-                # If 'qval' is a list check for membership.
+                # If 'qry_val' is a list, check for membership.
                 if isinstance(qry_val, list):
                     # We could be checking in a foreign keys column (list).
                     if isinstance(obj_val, list):
+                        # Check if a list of query values,
+                        # has match in a list of foreign keys.
                         if set(obj_val).intersection(set(qry_val)):
                             results[obj_id] = obj_attrs
                     # Otherwise check if the object's value is in query list.
@@ -44,7 +58,9 @@ class BaseManager:
                             results[obj_id] = obj_attrs
                 # We are checking for a single query value.
                 else:
-                    if isinstance(obj_val, list):
+                    if attr == 'id' and obj_id == qry_val:
+                        results[obj_id] = obj_attrs
+                    elif isinstance(obj_val, list):
                         if qry_val in obj_val:
                             results[obj_id] = obj_attrs
                     elif obj_attrs[attr] == qry_val:

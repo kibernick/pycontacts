@@ -33,3 +33,8 @@ def sample_persons(address_book):
     person2 = address_book.persons.create(first_name="Kate", last_name="Austen")
     person2.save()
     return person1, person2
+
+
+@pytest.fixture
+def sample_group(address_book):
+    return address_book.groups.create(name="Sampled").save()

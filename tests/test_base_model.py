@@ -71,7 +71,8 @@ def test_get_record_new(extended_instance):
 
 
 def test_save(address_book, extended_instance):
-    extended_instance.save()
+    output = extended_instance.save()
+    assert output == extended_instance
     table = address_book._store[extended_instance.table_name]
     assert table[extended_instance.id] == extended_instance
 
@@ -89,9 +90,11 @@ def test_delete_not_in_table(extended_instance):
 
 def test_delete_ok(address_book, extended_instance):
     extended_instance.save()
+    old_id = extended_instance.id
     extended_instance.delete()
     table = address_book._store[extended_instance.table_name]
-    assert extended_instance.id not in table
+    assert old_id not in table
+    assert extended_instance.id is None
 
 
 def test_update_related_object_ids(extended_instance):
