@@ -14,6 +14,18 @@ Install the library within your (virtual) environment with:
 
 The only dependencies are related to running tests and are found in the `dev-requirements.txt` file.
 
+# Implementation
+
+AddressBook stores data within it's `_store` instance attribute. This "store" is actually a `dict` with keys representing entity table names, and values containing records. Each record is further represented by a `dict`, with the key-value pairs representing the table columns and values.
+
+There is currently almost no validation of user input, as this would require a more complex solution.
+
+Interaction with the various entities is done via manager instances on the address book instance (e.g. `self.groups`). Entity classes mimick an ORM in their design. There are manager classes (extended from `BaseManager`) that handle operations on the table level, as well as "model" classes (extended from `BaseModel`) that handle operations on the instances themselves.
+ 
+A new entity can be added by extending `BaseModel` with the appropriate class attributes: `table_name` (str), `attributes` (tuple), `foreign_keys` (dict).
+
+New behaviours can be added to the base model and manager classes, so that they are inherited by all entities.
+
 # Usage
 
 An AddressBook's entities include Persons, Groups, EmailAddresses and others. The common API to interact with these entities goes as follows:
@@ -81,6 +93,13 @@ book.persons.find_by_email(email="newton@example.com")
 
 ## Find person by email address for any substring
 
-The simplest solution in the currect setup would be to change the `BaseManager.filter` method to optionally accomodate for inexact matches, with a suffix added to the kwarg.
+The simplest solution in the current setup would be to change the `BaseManager.filter` method to optionally accomodate for inexact matches, with a suffix added to the kwarg.
 
 For example, by being able to call: `persons.filter(email__contains="thomas"` we would then get all email addresses containing this substring. We should be to implement this and other similar "field lookups" by abstracting the `filter` method.
+
+## Improvements
+
+* Email address matching by prefix string.
+* Move the `id` field alongside other attributes - for easier filtering.
+* Consider if worthwhile - switching to lists of dicts (instead of the current dicts of dicts) for storage.
+* Add a simple persistence layer that would allow JSON serialization.
