@@ -1,3 +1,4 @@
+import copy
 import pytest
 
 from pycontacts.models import BaseModel
@@ -91,3 +92,17 @@ def test_delete_ok(address_book, extended_instance):
     extended_instance.delete()
     table = address_book._store[extended_instance.table_name]
     assert extended_instance._uuid not in table
+
+
+def test_update_related_object_ids(extended_instance):
+    extended_instance.foreign_keys = {
+        "more_tests": extended_instance.__class__,
+    }
+    extended_instance['more_tests'] = [
+        copy.deepcopy(extended_instance),
+    ]
+    record = {}
+    extended_instance._update_related_object_ids(record)
+    assert record['more_tests_ids'] == [
+        x._uuid for x in extended_instance['more_tests']
+    ]

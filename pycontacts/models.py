@@ -11,13 +11,24 @@ class BaseModel(dict):
     attributes = None  # Set this as tuple of strings.
     foreign_keys = {}  # str -> class
 
-    def __init__(self, book, *args, **kwargs):
-        super(BaseModel, self).__init__(*args, **kwargs)
+    def __init__(self, book, **kwargs):
+        """
+        Need to provide an AddressBook instance as a first argument.
+        Model attributes can be initialised with kwargs.
+        Foreign keys are received as lists of objects of appropriate type.
+
+        Example foreign keys in kwarg:
+        "phone_numbers": [<PhoneNumber>, <...>]
+
+        """
         self._uuid = None  # unique identifier of this model instance
         self._book = book
         # Try to fill in values from given kwargs
         if self.attributes:
             self._set_attribute_values(self, source=kwargs)
+        for name, cls in self.foreign_keys.items():
+            # TODO: validation for type match with cls
+            self[name] = kwargs.get(name, [])
 
     def __repr__(self):
         return "<{}{}>".format(self.__class__.__name__,
@@ -43,6 +54,12 @@ class BaseModel(dict):
         for attribute_name in self.attributes:
             dest[attribute_name] = source.get(attribute_name)
 
+    def _update_related_object_ids(self, record):
+        for list_name, key_class in self.foreign_keys.items():
+            column_name = list_name + "_ids"
+            related_obj_ids = [o._uuid for o in self[list_name]]
+            record[column_name] = related_obj_ids
+
     def _get_table(self):
         if self.table_name not in self._book._store:
             self._book._store[self.table_name] = {}
@@ -58,12 +75,14 @@ class BaseModel(dict):
     def save(self):
         """
         Technically, does an update of an existing record in store.
-        Does not update individual related objects.
+        Does not update individual related objects, but keeps a record
+        of their IDs.
         """
         self._check_config()
         table = self._get_table()
         record = self._get_record(table)
         self._set_attribute_values(record)
+        self._update_related_object_ids(record)
 
     def delete(self):
         """
