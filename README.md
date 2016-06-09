@@ -18,7 +18,7 @@ The only dependencies are related to running tests and are found in the `dev-req
 
 AddressBook stores data within it's `_store` instance attribute. This "store" is actually a `dict` with keys representing entity table names, and values containing records. Each record is further represented by a `dict`, with the key-value pairs representing the table columns and values.
 
-There is currently almost no validation of user input, as this would require a more complex solution.
+There is currently almost no validation of user input, as this would require a more complex solution/reinventing the (delicate) wheel.
 
 Interaction with the various entities is done via manager instances on the address book instance (e.g. `self.groups`). Entity classes mimick an ORM in their design. There are manager classes (extended from `BaseManager`) that handle operations on the table level, as well as "model" classes (extended from `BaseModel`) that handle operations on the instances themselves.
  
@@ -100,6 +100,7 @@ For example, by being able to call: `persons.filter(email__contains="thomas"` we
 ## Improvements
 
 * Email address matching by prefix string.
+* Validation of user input. Might require introducing a `Field` class.
 * Move the `id` field alongside other attributes - for easier filtering.
 * Consider if worthwhile - switching to lists of dicts (instead of the current dicts of dicts) for storage.
 * Add a simple persistence layer that would allow JSON serialization.
