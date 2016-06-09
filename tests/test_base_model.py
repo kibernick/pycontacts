@@ -67,13 +67,13 @@ def test_get_record_new(extended_instance):
     table = {}
     record = extended_instance._get_record(table)
     assert record == {}
-    assert extended_instance._uuid in table
+    assert extended_instance.id in table
 
 
 def test_save(address_book, extended_instance):
     extended_instance.save()
     table = address_book._store[extended_instance.table_name]
-    assert table[extended_instance._uuid] == extended_instance
+    assert table[extended_instance.id] == extended_instance
 
 
 def test_delete_no_uuid(extended_instance):
@@ -82,7 +82,7 @@ def test_delete_no_uuid(extended_instance):
 
 
 def test_delete_not_in_table(extended_instance):
-    extended_instance._uuid = "123"
+    extended_instance.id = "123"
     with pytest.raises(InstanceDoesNotExist):
         extended_instance.delete()
 
@@ -91,7 +91,7 @@ def test_delete_ok(address_book, extended_instance):
     extended_instance.save()
     extended_instance.delete()
     table = address_book._store[extended_instance.table_name]
-    assert extended_instance._uuid not in table
+    assert extended_instance.id not in table
 
 
 def test_update_related_object_ids(extended_instance):
@@ -104,5 +104,5 @@ def test_update_related_object_ids(extended_instance):
     record = {}
     extended_instance._update_related_object_ids(record)
     assert record['more_tests_ids'] == [
-        x._uuid for x in extended_instance['more_tests']
+        x.id for x in extended_instance['more_tests']
     ]

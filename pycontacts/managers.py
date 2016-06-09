@@ -55,7 +55,7 @@ class BaseManager:
         cls_objects = []
         for r_id, r_attrs in results.items():
             cls_obj = self.create(**r_attrs)
-            cls_obj._uuid = r_id
+            cls_obj.id = r_id
             cls_objects.append(cls_obj)
         return cls_objects
 

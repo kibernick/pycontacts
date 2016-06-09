@@ -21,7 +21,7 @@ class BaseModel(dict):
         "phone_numbers": [<PhoneNumber>, <...>]
 
         """
-        self._uuid = None  # unique identifier of this model instance
+        self.id = None  # unique identifier of this model instance
         self.book = book
         # Try to fill in values from given kwargs
         if self.attributes:
@@ -57,7 +57,7 @@ class BaseModel(dict):
     def _update_related_object_ids(self, record):
         for list_name, key_class in self.foreign_keys.items():
             column_name = list_name + "_ids"
-            related_obj_ids = [o._uuid for o in self[list_name]]
+            related_obj_ids = [o.id for o in self[list_name]]
             record[column_name] = related_obj_ids
 
     def _get_table(self):
@@ -66,11 +66,11 @@ class BaseModel(dict):
         return self.book._store[self.table_name]
 
     def _get_record(self, table):
-        if not self._uuid:
-            self._uuid = self._generate_uuid()
-        if self._uuid not in table:
-            table[self._uuid] = {}
-        return table[self._uuid]
+        if not self.id:
+            self.id = self._generate_uuid()
+        if self.id not in table:
+            table[self.id] = {}
+        return table[self.id]
 
     def save(self):
         """
@@ -89,12 +89,12 @@ class BaseModel(dict):
         Remove this record from store, potentially leaves foreign key records as orphaned.
         """
         self._check_config()
-        if not self._uuid:
+        if not self.id:
             raise InstanceDoesNotExist()
         table = self._get_table()
-        if self._uuid not in table:
+        if self.id not in table:
             raise InstanceDoesNotExist()
-        del table[self._uuid]
+        del table[self.id]
 
 
 class EmailAddress(BaseModel):
