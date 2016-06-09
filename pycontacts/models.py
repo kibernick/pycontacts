@@ -1,3 +1,4 @@
+import importlib
 import uuid
 
 from .exceptions import ImproperlyConfigured, InstanceDoesNotExist
@@ -127,6 +128,10 @@ class Group(BaseModel):
         'name',
     )
     foreign_keys = {}
+
+    def get_members(self):
+        person_results = self.book.persons.filter(groups_ids=self.id)
+        return self.book.persons.convert_results(person_results)
 
 
 class Person(BaseModel):
