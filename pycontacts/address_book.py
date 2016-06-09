@@ -12,6 +12,10 @@ class AddressBook:
     def __init__(self):
         self._store = {}
 
+    def __repr__(self):
+        return "{}({})".format(self.__class__.__name__,
+                               self._store)
+
     def EmailAddress(self, *args, **kwargs):
         return EmailAddress(book=self, *args, **kwargs)
 
