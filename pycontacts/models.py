@@ -22,7 +22,7 @@ class BaseModel(dict):
 
         """
         self._uuid = None  # unique identifier of this model instance
-        self._book = book
+        self.book = book
         # Try to fill in values from given kwargs
         if self.attributes:
             self._set_attribute_values(self, source=kwargs)
@@ -39,8 +39,8 @@ class BaseModel(dict):
             raise ImproperlyConfigured("table_name")
         if self.attributes is None:
             raise ImproperlyConfigured("attributes")
-        if self._book is None:
-            raise ImproperlyConfigured("_book")
+        if self.book is None:
+            raise ImproperlyConfigured("book")
 
     @staticmethod
     def _generate_uuid():
@@ -61,9 +61,9 @@ class BaseModel(dict):
             record[column_name] = related_obj_ids
 
     def _get_table(self):
-        if self.table_name not in self._book._store:
-            self._book._store[self.table_name] = {}
-        return self._book._store[self.table_name]
+        if self.table_name not in self.book._store:
+            self.book._store[self.table_name] = {}
+        return self.book._store[self.table_name]
 
     def _get_record(self, table):
         if not self._uuid:

@@ -19,9 +19,9 @@ def test_create_person_model_class():
     book = AddressBook()
     p = book.persons.create()
     assert isinstance(p, Person)
-    assert p._book is not None
-    assert isinstance(p._book, AddressBook)
-    assert p._book._store is book._store
+    assert p.book is not None
+    assert isinstance(p.book, AddressBook)
+    assert p.book._store is book._store
 
 
 def test_create_book_with_managers(address_book):

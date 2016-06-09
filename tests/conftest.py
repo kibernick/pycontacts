@@ -24,8 +24,12 @@ def extended_instance(address_book):
 
 @pytest.fixture
 def sample_persons(address_book):
-    person1 = address_book.persons.create(first_name="John", last_name="Locke")
+    person1_email = address_book.email_addresses.create(email="johnlocke@lost.com")
+    person1_email.save()
+    person1 = address_book.persons.create(
+        first_name="John", last_name="Locke", email_addresses=[person1_email])
     person1.save()
+
     person2 = address_book.persons.create(first_name="Kate", last_name="Austen")
     person2.save()
     return person1, person2

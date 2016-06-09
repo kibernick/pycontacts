@@ -9,7 +9,7 @@ class ExampleManager(BaseManager):
 
 def test_new_manager(address_book):
     examples = ExampleManager(address_book)
-    assert examples._book == address_book
+    assert examples.book == address_book
 
 
 def test_manager_create(address_book):

@@ -7,12 +7,12 @@ from pycontacts.exceptions import ImproperlyConfigured, InstanceDoesNotExist
 
 def test_initialization_base(address_book):
     bm = BaseModel(address_book)
-    assert bm._book is address_book
+    assert bm.book is address_book
     assert not bm.items()
 
 
 def test_initialization_extending(address_book, extended_instance):
-    assert extended_instance._book is address_book
+    assert extended_instance.book is address_book
     assert extended_instance['test_set'] == 123
     assert not extended_instance['test_not_set']
 
