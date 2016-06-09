@@ -19,6 +19,10 @@ class BaseModel(dict):
         if self.attributes:
             self._set_attribute_values(self, source=kwargs)
 
+    def __repr__(self):
+        return "<{}{}>".format(self.__class__.__name__,
+                               super(BaseModel, self).__repr__())
+
     def _check_config(self):
         if self.table_name is None:
             raise ImproperlyConfigured("table_name")

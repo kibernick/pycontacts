@@ -13,7 +13,7 @@ class AddressBook:
         self._store = {}
 
     def __repr__(self):
-        return "{}({})".format(self.__class__.__name__,
+        return "<{}{}>".format(self.__class__.__name__,
                                self._store)
 
     def EmailAddress(self, *args, **kwargs):
