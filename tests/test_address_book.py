@@ -1,5 +1,12 @@
 from pycontacts import AddressBook
 from pycontacts.models import Person
+from pycontacts.managers import (
+    EmailAddressManager,
+    GroupManager,
+    PhoneNumberManager,
+    PersonManager,
+    StreetAddressManager,
+)
 
 
 def test_create_book():
@@ -10,8 +17,16 @@ def test_create_book():
 
 def test_create_person_model_class():
     book = AddressBook()
-    p = book.Person()
+    p = book.persons.create()
     assert isinstance(p, Person)
     assert p._book is not None
     assert isinstance(p._book, AddressBook)
     assert p._book._store is book._store
+
+
+def test_create_book_with_managers(address_book):
+    assert isinstance(address_book.email_addresses, EmailAddressManager)
+    assert isinstance(address_book.groups, GroupManager)
+    assert isinstance(address_book.phone_numbers, PhoneNumberManager)
+    assert isinstance(address_book.persons, PersonManager)
+    assert isinstance(address_book.street_addresses, StreetAddressManager)

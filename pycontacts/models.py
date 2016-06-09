@@ -5,7 +5,7 @@ from .exceptions import ImproperlyConfigured, InstanceDoesNotExist
 
 class BaseModel(dict):
     """
-    Provide an elementary way of saving data.
+    Provide an elementary way of saving instance data.
     """
     table_name = None  # "table" to save this model to
     attributes = None  # Set this as tuple of strings.
